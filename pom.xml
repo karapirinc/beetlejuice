@@ -19,6 +19,7 @@
         <netty.version>4.1.79.Final</netty.version>
         <mockk.version>1.12.4</mockk.version>
         <springmockk.version>3.1.1</springmockk.version>
+        <kotlin-logging.version>2.1.23</kotlin-logging.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -75,6 +76,11 @@
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-reactor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.microutils</groupId>
+            <artifactId>kotlin-logging</artifactId>
+            <version>${kotlin-logging.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>

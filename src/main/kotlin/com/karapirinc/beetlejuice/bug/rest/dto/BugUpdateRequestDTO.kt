@@ -12,8 +12,8 @@ data class BugUpdateRequestDTO(
     @JsonProperty("bug_id") val bugId: UUID,
     @JsonProperty("user_id") val userId: UUID,
     @JsonProperty("assignee_id") val assigneeId: UUID? = null,
-    val subject: String,
-    val description: String,
+    val subject: String?,
+    val description: String?,
     val priority: BugPriority? = null,
     val status: BugStatus? = null
 )

@@ -20,5 +20,5 @@ data class BugSearchResponseDTO(
     @JsonProperty("created_at")
     val createdAt: Instant,
     @JsonProperty("updated_at")
-    val updatedAt: Instant
+    val updatedAt: Instant?
 )

@@ -1,10 +1,12 @@
 package com.karapirinc.beetlejuice.bug.service
 
 import com.karapirinc.beetlejuice.bug.model.BugPriority
-import com.karapirinc.beetlejuice.bug.model.BugStatus
+import com.karapirinc.beetlejuice.bug.repository.BugRepository
 import com.karapirinc.beetlejuice.bug.rest.dto.BugReportRequestDTO
 import com.karapirinc.beetlejuice.bug.rest.dto.BugSearchRequestDTO
 import com.karapirinc.beetlejuice.bug.rest.dto.BugUpdateRequestDTO
+import com.karapirinc.beetlejuice.user.service.UserService
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -14,9 +16,14 @@ import org.junit.jupiter.api.extension.ExtendWith
 import java.util.*
 
 @ExtendWith(MockKExtension::class)
-internal class BugServiceTest {
+internal class BugServiceTest(
+    @RelaxedMockK
+    val bugRepository: BugRepository,
+    @RelaxedMockK
+    val userService: UserService
+) {
 
-    private val bugService = BugService()
+    private val bugService = BugService(userService, bugRepository)
 
     @Nested
     inner class WhenReportBug {
@@ -91,17 +98,13 @@ internal class BugServiceTest {
     @Nested
     inner class WhenSearchBug {
         private val request = BugSearchRequestDTO(
-            subject = "a bug",
-            description = "an ordinary bug",
-            assignee = UUID.randomUUID(),
-            priority = BugPriority.MEDIUM,
-            status = BugStatus.TO_DO
+            searchText = "a bug",
         )
 
         @Test
         fun `should return list of bugs`() {
             val result = bugService.searchBugs(request)
-            assertThat(result).hasSize(2)
+            assertThat(result).isNotNull
         }
     }
 

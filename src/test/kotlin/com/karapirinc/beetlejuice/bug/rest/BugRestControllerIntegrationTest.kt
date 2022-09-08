@@ -7,6 +7,7 @@ import com.karapirinc.beetlejuice.bug.rest.dto.BugReportRequestDTO
 import com.karapirinc.beetlejuice.bug.rest.dto.BugSearchRequestDTO
 import com.karapirinc.beetlejuice.bug.rest.dto.BugUpdateRequestDTO
 import com.karapirinc.beetlejuice.bug.service.BugService
+import com.karapirinc.beetlejuice.config.ApiBase
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.justRun
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.body
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.Instant
 import java.util.*
@@ -43,7 +45,7 @@ class BugRestControllerIntegrationTest(@Autowired private val webClient: WebTest
 
         val bugId = UUID.randomUUID()
 
-        every { bugService.createBug(request) } returns bugId
+        every { bugService.createBug(request) } returns Mono.just(bugId)
 
         webClient.post().uri(ApiBase.BUGS_PATH).contentType(APPLICATION_JSON).body(Mono.just(request))
             .exchange().expectStatus().isCreated
@@ -106,7 +108,7 @@ class BugRestControllerIntegrationTest(@Autowired private val webClient: WebTest
             updatedAt = Instant.now()
         )
 
-        every { bugService.fetchBug(bugId) } returns bug
+        every { bugService.fetchBug(bugId) } returns Mono.just(bug)
 
         webClient.get().uri("${ApiBase.BUGS_PATH}/{id}", mapOf("id" to bugId))
             .exchange()
@@ -127,11 +129,7 @@ class BugRestControllerIntegrationTest(@Autowired private val webClient: WebTest
     @Test
     fun `should search a bug`() {
         val request = BugSearchRequestDTO(
-            subject = "a bug",
-            description = "an ordinary bug",
-            assignee = UUID.randomUUID(),
-            priority = BugPriority.MEDIUM,
-            status = BugStatus.TO_DO
+            searchText = "a bug"
         )
 
         val bugId1 = UUID.randomUUID()
@@ -162,7 +160,7 @@ class BugRestControllerIntegrationTest(@Autowired private val webClient: WebTest
             createdAt = Instant.now(),
             updatedAt = Instant.now()
         )
-        every { bugService.searchBugs(request) } returns listOf(bug1, bug2)
+        every { bugService.searchBugs(request) } returns Flux.just(bug1, bug2)
 
         webClient.post().uri("${ApiBase.BUGS_PATH}/search").contentType(APPLICATION_JSON)
             .body(Mono.just(request)).exchange()

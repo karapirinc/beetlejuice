@@ -8,9 +8,9 @@ import java.util.*
  * TODO user_id should be retrieved from security context
  */
 data class BugReportRequestDTO(
-    @JsonProperty("user_id") val userId: UUID,
-    @JsonProperty("assignee_id") val assigneeId: UUID? = null,
-    val subject: String,
-    val description: String,
+    @JsonProperty(required = true, value = "user_id") val userId: UUID,
+    @JsonProperty(value = "assignee_id") val assigneeId: UUID? = null,
+    @JsonProperty(required = true) val subject: String,
+    @JsonProperty(required = true) val description: String,
     val priority: BugPriority? = BugPriority.MEDIUM
 )

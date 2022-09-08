@@ -1,4 +1,4 @@
-package com.karapirinc.beetlejuice.bug.rest
+package com.karapirinc.beetlejuice.config
 
 object ApiBase {
     private const val BASE_PATH = "/api/v1"
